@@ -2,7 +2,7 @@
 
 * This was an intermediate-level Linux machine that involved brute-forcing WordPress credentials to gain initial access through a malicious plugin upload and escalating privileges through a Jenkins instance with weak credentials.
 
-![1673101889700](image/READMI/1673101889700.png)
+![1673101889700](img/Internal.webp)
 
 ---
 
@@ -11,7 +11,7 @@
     Nmap is a free and open source utility for network discovery and security auditing. With this tool we can search for open ports on a target machine.
 
 ```bash
-$nmap -sCV 10.10.192.249        
+$nmap -sCV 10.10.192.249      
 Starting Nmap 7.92 ( https://nmap.org ) at 2023-01-07 05:07 EST
 Nmap scan report for 10.10.192.249 (10.10.192.249)
 Host is up (0.074s latency).
@@ -80,13 +80,13 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 
 The scan has found blog, wordPress and phpmyadmin entries, when accessing the /blog directory through a browser, the site looks like a default WordPress installation :
 
-![1673102881766](image/READMI/1673102881766.png)
+![1673102881766](img/blog.png)
 
 * As of this moment we don’t know the username and password. However, we can able to enumerate usernames through different techniques :
 
 In a Default installation you should be able to find the users of a site by iterating through the user id’s and appending them to the sites URL. For example /?author=1, adding 2 then 3 etc...
 
-![1673103609894](image/READMI/1673103609894.png)
+![1673103609894](img/author.png)
 
 We Finding a user named 'admin' .
 
@@ -96,7 +96,7 @@ We have a login in down the page .
 
 i Trying login user 'admin' and password 'password' .
 
-![1673103782969](image/READMI/1673103782969.png)
+![1673103782969](img/wordpriss.png)
 
     Running WPScan  to attempt to brute-force the admin user password :
 
@@ -167,7 +167,7 @@ Interesting Finding(s):
 [i] No Config Backups Found.
 
 [+] Performing password attack on Wp Login against 1 user/s
-[SUCCESS] - admin / *******                     
+[SUCCESS] - admin / *******                   
 Trying admin / kambal Time: 00:01:19 <                           > (3900 / 14348292)  0.02%  ETA: ??:??:??
 
 [!] Valid Combinations Found:
@@ -178,7 +178,7 @@ Trying admin / kambal Time: 00:01:19 <                           > (3900 / 14348
 
 So Now We Loging in WordPress :
 
-![1673103400671](image/READMI/1673103400671.png)
+![1673103400671](img/login-wordprs.png)
 
 ---
 
@@ -186,7 +186,7 @@ So Now We Loging in WordPress :
 
 We got in, what’s next? We already know that a specific theme is outdated, let’s visit that using theme editor. Go to appearance and click “ **theme editor** ”.
 
-![1673104209899](image/READMI/1673104209899.png)
+![1673104209899](img/find-local-404.png)
 
 * We can use PHP to get the reverse shell using [Revershell.php](https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/master/php-reverse-shell.php) payload . Either you can download on your machine or if you are using Kali Linux, it’s already there. We have to edit it to add our attacker machine IP address and port address. We are doing this because, after this .php file execution it gives us a reverse shell on specified IP address and port.
 * Now copy all the content of Revershell.php file and go to the theme editor of WordPress and click on “ **404 Template** ”.
@@ -209,11 +209,11 @@ $nc -lnvp 1234
 
 Return to the page `http://internel.thm/blog` and click in `Hello World!` , also in the lien write any word for 404 :
 
-![1673105279408](image/READMI/1673105279408.png)
+![1673105279408](img/404.png)
 
 Now I have a revershell :
 
-![1673105328403](image/READMI/1673105328403.png)
+![1673105328403](img/shell.png)
 
 I find to user but in so enable ,You must obtain a login password in orther to access it :
 
@@ -310,7 +310,7 @@ Internal Jenkins service is running on 172.17.0.2:8080
 Since port 8080 can only by accessed locally, setting up port forwarding in order to redirect traffic to localhost on port 8080 to the target machine on port 8080 :
 
 ```bash
-$ssh -L 8080:172.17.0.2:8080 aubreanna@10.10.192.249                                             
+$ssh -L 8080:172.17.0.2:8080 aubreanna@10.10.192.249                                           
 aubreanna@10.10.192.249's password: 
 Welcome to Ubuntu 18.04.4 LTS (GNU/Linux 4.15.0-112-generic x86_64)
 
@@ -342,19 +342,19 @@ aubreanna@internal:~$
 
 > Jenkins is now accessible from the Kali host :
 
-![1673106301591](image/READMI/1673106301591.png)
+![1673106301591](img/jnkins.png)
 
 Using metasploit to brute-force the password :
 
 ### STEP 1 :
 
-![1673106383633](image/READMI/1673106383633.png)
+![1673106383633](img/metasploit.png)
 
 searching a jenkins , i found a jenkins_login number 10
 
 #### STEP 2 :
 
-![1673106456759](image/READMI/1673106456759.png)
+![1673106456759](img/meta2.png)
 
 > We must fill in the important information :
 
@@ -363,13 +363,13 @@ searching a jenkins , i found a jenkins_login number 10
 3. *STOP_ON_ACCESS*
 4. *USERNAME*
 
-![1673106666799](image/READMI/1673106666799.png)
+![1673106666799](img/matas3.png)
 
 #### STEP 3 :
 
 * Now we just write `run `& click clavier `entre `for brute forcing password !!!
 
-![1673107271285](image/READMI/1673107271285.png)
+![1673107271285](img/pass-metasploit.png)
 
 So we found a password .
 
@@ -389,7 +389,7 @@ we loging a Jenkins in browser .we have a Script Console format Groovy Script .
   ```
 * Remove everything from that file and paste the copied content and click on“ R**un** ”.
 
-![1673107392540](image/READMI/1673107392540.png)
+![1673107392540](img/groovy-revershell.png)
 
 The next step is to set up a Netcat listener, which will catch the reverse shell when it is executed by the victim host, using the following flags:
 
@@ -401,7 +401,7 @@ The next step is to set up a Netcat listener, which will catch the reverse shell
 ***CMD:***
 
 ```bash
-$nc -lnvp 1234                                                                                                  
+$nc -lnvp 1234                                                                                                
 listening on [any] 1111 ...
 connect to [10.9.35.72] from (UNKNOWN) [10.10.64.173] 54690
 id
@@ -449,7 +449,7 @@ root:tr0ub13guM!@#123
 
 we have a password root :
 
-![1673108031605](image/READMI/1673108031605.png)
+![1673108031605](img/root.png)
 
 *Finally ,we finished this Machine.*
 
